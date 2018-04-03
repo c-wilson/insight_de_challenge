@@ -1,0 +1,1 @@
+Tests that day changes are handled correctly.

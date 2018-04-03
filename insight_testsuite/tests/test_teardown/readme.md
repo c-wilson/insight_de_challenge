@@ -1,0 +1,1 @@
+Testing that teardown at the end of file closes all sessions in order that they were initiated.  

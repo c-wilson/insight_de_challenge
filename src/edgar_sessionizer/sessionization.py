@@ -1,22 +1,38 @@
+"""
+Class that tracks the start and teardown of user sessions.
+
+Classes:
+    Sessionizer - main logic class
+    Session - supporting data structure maintaining information about a single user class.
+"""
+
 from collections import deque, defaultdict
 from itertools import count
 from . import sources
 from . import sinks
-from math import inf
-import os
+
+
 
 class Sessionizer:
     """
-    Main logic class.
+    Main logic class that requests new data from DataSource objects, tracks open user sessions, and reports closed
+    session information to a Sink class for logging or transmission to another process.
+
+    Gets data by calling DataSource.get_next(), which should return a RequestRecord data object (found in sources module)
+    Writes closed session data by calling Sink.write(), which should accept a Session data object (found in this module)
+
+    Session information is sent to Sink immediately on expiration of the session.
+
+    When DataSource is exhausted, all open sessions are closed *in the order they were opened*
     """
 
-    def __init__(self, source: sources.DataSource, sink: sinks.Sink, session_dur: float):
+    def __init__(self, source: 'sources.DataSource', sink: '.sinks.Sink', session_dur: float):
+        """
+        :param source: DataSource object.
+        :param sink: Sink object.
+        :param session_dur: Time in seconds when a session times out from no activity.
         """
 
-        :param source:
-        :param sink:
-        :param session_dur:
-        """
         self.source = source
         self.sink = sink
         self._sessions = defaultdict(Session)  # session information keyed by ip address
@@ -26,36 +42,41 @@ class Sessionizer:
         self._current_time = -1.
 
     def run(self):
+        """
+        Retrieves transactions from source, updates session information, and initiates session expiration handling if
+        time has changed since last transaction.
+
+        Continues to run until bool(source) returns false, which indicates that the data source is exhausted.
+        """
+
         while self.source:
             # Get next transaction record:
             record = self.source.get_next()
-            if record:
-                timestamp = record.timestamp
-                ip = record.ip
+            timestamp = record.timestamp
+            ip = record.ip
                 # Add transaction to the record for the IP:
-                self._sessions[ip].add_txn(ip, timestamp)
-                # todo: can add more tracking information (ie accession, url)
+            self._sessions[ip].add_txn(ip, timestamp)
+            # todo: can add more tracking information (ie accession, url)
 
-                # Add the session's IP to the expiration tracker:
-                expiration_time = timestamp + self._session_timeout_dur
-                self._ips_by_expiration[expiration_time].appendleft(ip)  # using as queue (FIFO). Add left, pop right.
+            # Add the session's IP to the expiration tracker:
+            expiration_time = timestamp + self._session_timeout_dur
+            self._ips_by_expiration[expiration_time].appendleft(ip)  # using as queue (FIFO). Add left, pop right.
 
-                # If time has advanced, service expirations occuring at the new timestamp:
-                if record.timestamp > self._current_time:
-                    self._current_time = timestamp
-                    self._process_timeouts(timestamp)
-                    # Also, add the new expiration time to the queue.
-                    self._expiration_times.append(expiration_time)  # add to time queue
+            # If time has advanced, service expirations occuring at the new timestamp:
+            if record.timestamp > self._current_time:
+                self._current_time = timestamp
+                self._process_timeouts(timestamp)
+                # Also, add the new expiration time to the queue.
+                self._expiration_times.append(expiration_time)  # add to time queue
 
-        # If source returns true there are no more transactions, cleanup open sessions now.
-        # I wish we could reuse the timeout logic here, but the specification is to log sessions in the order
-        # that they were recorded, so we need another method that sorts the open sessions based on their
-        # position in the log.
+        # If source returns False there are no more transactions, cleanup open sessions now the specification is to log
+        # sessions in the order that they were started, so we cannot reuse logic from normal timeouts.
         self._cleanup()
 
     def _process_timeouts(self, time: float):
         """
-        Service all session expirations that MIGHT occur at or prior to the specified time.
+        Service all session expiration that occur at or prior to the specified time. Retrieves IP addresses from the
+        expiration times dictionary and uses this to check the session instance in
 
         :param time: process all expirations that occur prior to this time.
         """
@@ -67,26 +88,24 @@ class Sessionizer:
             t = self._expiration_times.popleft()
             ips = self._ips_by_expiration.pop(t)  # type: deque
             latest_txn_time = time - self._session_timeout_dur
+            # if the session's last transaction occured before latest_txn_time, it is expired.
+
             while ips:
                 ip = ips.pop()
                 if ip in self._sessions:
                     # must explicitly check because if the session is deleted, defaultdict will create on get
                     session = self._sessions[ip]
                     if session.latest <= latest_txn_time:
-                        self.sink.write(
-                            session.ip, session.start, session.latest, session.duration(), session.txn_count
-                        )
+                        self.sink.write(session)
                         del self._sessions[ip]  # Effectively ends session by removing from data structure.
 
     def _cleanup(self):
-        """
-        We need to save the remaining open sessions on shutdown in the order in which they were started.
-        :return:
-        """
+        """ Closes and sends to sink any open sessions in the order they were opened. """
+
         sess_list = list(self._sessions.values())
         sess_list.sort()
         for session in sess_list:
-            self.sink.write(session.ip, session.start, session.latest, session.duration(), session.txn_count)
+            self.sink.write(session)
 
 
 class Session:
@@ -112,10 +131,10 @@ class Session:
         self.latest = timestamp
         self.txn_count += 1
 
-    def duration(self):
+    def duration(self) -> float:
+        """ Returns the (inclusive) duration of the session in seconds."""
+        return self.latest - self.start + 1.  # time is inclusive of the latest second.
 
-        return self.latest - self.start + 1  # time is inclusive of the latest second.
-
-    def __lt__(self, other):
-        """ for sorting based on the that the session was opened. """
+    def __lt__(self, other: 'Session'):
+        """ for sorting based on session open time. """
         return self._id < other._id

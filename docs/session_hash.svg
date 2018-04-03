@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 185 136.3" enable-background="new 0 0 185 136.3" xml:space="preserve">
+	 viewBox="0 0 282.3 95.6" enable-background="new 0 0 282.3 95.6" xml:space="preserve">
 <font horiz-adv-x="1100">
 <!-- Input is a trademark of The Font Bureau, Inc. -->
 <!-- Copyright: Copyright 2018 Adobe System Incorporated. All rights reserved. -->
@@ -30,7 +30,6 @@
 <glyph unicode="b" horiz-adv-x="569" d="M145,0l4,80l3,0C188,16 244,-11 314,-11C422,-11 531,75 531,248C532,395 447,495 327,495C249,495 193,460 162,406l-2,0l0,304l-87,0l0,-585C73,82 71,33 69,0M160,281C160,295 163,307 165,317C183,384 239,425 299,425C393,425 443,342 443,245C443,134 388,59 296,59C232,59 181,101 164,162C162,172 160,183 160,194z"/>
 <glyph unicode="c" horiz-adv-x="448" d="M403,84C378,73 345,60 295,60C199,60 127,129 127,241C127,342 187,424 298,424C346,424 379,413 400,401l20,68C396,481 350,494 298,494C140,494 38,386 38,237C38,89 133,-10 279,-10C344,-10 395,6 418,18z"/>
 <glyph unicode="e" horiz-adv-x="501" d="M462,226C463,235 465,249 465,267C465,356 423,495 265,495C124,495 38,380 38,234C38,88 127,-10 276,-10C353,-10 406,6 437,20l-15,63C389,69 351,58 288,58C200,58 124,107 122,226M123,289C130,350 169,432 258,432C357,432 381,345 380,289z"/>
-<glyph unicode="h" horiz-adv-x="555" d="M73,0l88,0l0,292C161,309 162,322 167,334C183,382 228,422 285,422C368,422 397,356 397,278l0,-278l88,0l0,288C485,455 381,495 316,495C283,495 252,485 226,470C199,455 177,433 163,408l-2,0l0,302l-88,0z"/>
 <glyph unicode="i" horiz-adv-x="234" d="M161,0l0,484l-88,0l0,-484M117,675C85,675 62,651 62,620C62,590 84,566 115,566C150,566 172,590 171,620C171,651 150,675 117,675z"/>
 <glyph unicode="j" horiz-adv-x="243" d="M-36,-209C11,-209 75,-193 114,-154C157,-110 172,-49 172,45l0,439l-88,0l0,-405C84,-37 75,-75 51,-103C30,-126 -5,-137 -45,-140M129,675C96,675 73,651 73,620C73,591 94,566 127,566C162,566 183,591 182,620C182,651 161,675 129,675z"/>
 <glyph unicode="l" horiz-adv-x="236" d="M73,0l88,0l0,710l-88,0z"/>
@@ -46,58 +45,56 @@
 </font>
 
 	<g>
-	<rect x="0.5" y="43.2" fill="none" stroke="#231F20" stroke-miterlimit="10" width="58.1" height="55.9"/>
-	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M58.6,136.3"/>
-	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M0.5,136.3"/>
-	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M58.6,117.7"/>
-	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M0.5,117.7"/>
-	<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="0.5" y1="99" x2="58.6" y2="99"/>
-	<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="0.5" y1="80.4" x2="58.6" y2="80.4"/>
-	<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="0.5" y1="61.8" x2="58.6" y2="61.8"/>
+	<rect x="54.5" y="20.5" fill="none" stroke="#231F20" stroke-miterlimit="10" width="58.1" height="55.9"/>
+	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M112.6,113.6"/>
+	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M54.5,113.6"/>
+	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M112.6,95"/>
+	<path fill="none" stroke="#231F20" stroke-miterlimit="10" d="M54.5,95"/>
+	<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="54.5" y1="76.4" x2="112.6" y2="76.4"/>
+	<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="54.5" y1="57.7" x2="112.6" y2="57.7"/>
+	<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="54.5" y1="39.1" x2="112.6" y2="39.1"/>
 </g>
-<text transform="matrix(1 0 0 1 7.2039 54.5809)" font-family="'InputMonoCompressed-Regular'" font-size="7.0405px">10.10.10.aaa</text>
-<text transform="matrix(1 0 0 1 4.2014 74.5389)" font-family="'InputMonoCompressed-Regular'" font-size="7.0405px">123.13.123.znq</text>
-<text transform="matrix(1 0 0 1 4.9931 93.3768)" font-family="'InputMonoCompressed-Regular'" font-size="7.0405px">123.13.10.zqa</text>
-<rect x="104.2" y="43.2" fill="none" stroke="#000000" stroke-miterlimit="10" width="78.9" height="16.4"/>
-<text transform="matrix(1 0 0 1 110.2549 54.5807)" font-family="'MyriadPro-Regular'" font-size="10px">session</text>
-<rect x="104.2" y="62.6" fill="none" stroke="#000000" stroke-miterlimit="10" width="78.9" height="16.4"/>
-<text transform="matrix(1 0 0 1 110.2549 73.9928)" font-family="'MyriadPro-Regular'" font-size="10px">session</text>
-<rect x="104.2" y="82.6" fill="none" stroke="#000000" stroke-miterlimit="10" width="78.9" height="16.4"/>
-<text transform="matrix(1 0 0 1 110.2549 94.0578)" font-family="'MyriadPro-Regular'" font-size="10px">session</text>
+<text transform="matrix(1 0 0 1 61.2039 31.9143)" font-family="'InputMonoCompressed-Regular'" font-size="7.0405px">10.10.10.aaa</text>
+<text transform="matrix(1 0 0 1 58.2014 51.8723)" font-family="'InputMonoCompressed-Regular'" font-size="7.0405px">123.13.123.znq</text>
+<text transform="matrix(1 0 0 1 58.9931 70.7101)" font-family="'InputMonoCompressed-Regular'" font-size="7.0405px">123.13.10.zqa</text>
+<rect x="158.2" y="20.5" fill="none" stroke="#000000" stroke-miterlimit="10" width="78.9" height="16.4"/>
+<text transform="matrix(1 0 0 1 164.2549 31.9141)" font-family="'MyriadPro-Regular'" font-size="10px">session</text>
+<rect x="158.2" y="39.9" fill="none" stroke="#000000" stroke-miterlimit="10" width="78.9" height="16.4"/>
+<text transform="matrix(1 0 0 1 164.2549 51.3262)" font-family="'MyriadPro-Regular'" font-size="10px">session</text>
+<rect x="158.2" y="60" fill="none" stroke="#000000" stroke-miterlimit="10" width="78.9" height="16.4"/>
+<text transform="matrix(1 0 0 1 164.2549 71.3911)" font-family="'MyriadPro-Regular'" font-size="10px">session</text>
 <g>
 	<g>
-		<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="58.6" y1="52.5" x2="97.1" y2="52.5"/>
+		<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="112.6" y1="29.8" x2="151.1" y2="29.8"/>
 		<g>
-			<polygon fill="#231F20" points="95.6,57.5 104.2,52.5 95.6,47.5 			"/>
+			<polygon fill="#231F20" points="149.6,34.8 158.2,29.8 149.6,24.8 			"/>
 		</g>
 	</g>
 </g>
 <g>
 	<g>
-		<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="58.6" y1="70.8" x2="97.1" y2="70.8"/>
+		<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="112.6" y1="48.1" x2="151.1" y2="48.1"/>
 		<g>
-			<polygon fill="#231F20" points="95.6,75.8 104.2,70.8 95.6,65.8 			"/>
+			<polygon fill="#231F20" points="149.6,53.1 158.2,48.1 149.6,43.1 			"/>
 		</g>
 	</g>
 </g>
 <g>
 	<g>
-		<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="58.6" y1="90.8" x2="97.1" y2="90.8"/>
+		<line fill="none" stroke="#231F20" stroke-miterlimit="10" x1="112.6" y1="68.2" x2="151.1" y2="68.2"/>
 		<g>
-			<polygon fill="#231F20" points="95.6,95.8 104.2,90.8 95.6,85.9 			"/>
+			<polygon fill="#231F20" points="149.6,73.2 158.2,68.2 149.6,63.2 			"/>
 		</g>
 	</g>
 </g>
-<rect x="19.6" y="103.2" fill="none" width="23.9" height="13.4"/>
-<text transform="matrix(1 0 0 1 19.6182 111.2292)" font-family="'InputMonoCompressed-Regular'" font-size="11px">...</text>
-<rect x="154.2" y="47" fill="none" width="30.8" height="12.6"/>
-<text transform="matrix(1 0 0 1 154.1786 49.8289)"><tspan x="0" y="0" font-family="'MyriadPro-Regular'" font-size="4px">start_time</tspan><tspan x="0" y="4.8" font-family="'MyriadPro-Regular'" font-size="4px">latest_txn_time</tspan></text>
-<rect x="136.6" y="103.2" fill="none" width="23.9" height="13.4"/>
-<text transform="matrix(1 0 0 1 136.6238 111.2292)" font-family="'InputMonoCompressed-Regular'" font-size="11px">...</text>
-<rect x="0.5" y="30.1" fill="none" width="58.1" height="10.5"/>
-<text transform="matrix(1 0 0 1 8.5625 37.8739)" font-family="'MyriadPro-Regular'" font-size="11px" text-decoration=" underline">Client IPs</text>
-<rect x="104.2" y="30.1" fill="none" width="78.9" height="10.5"/>
-<text transform="matrix(1 0 0 1 108.6582 37.8739)" font-family="'MyriadPro-Regular'" font-size="11px" text-decoration=" underline">Session objects</text>
-<rect x="0.1" y="1.8" fill="none" width="183.3" height="19.3"/>
-<text transform="matrix(1 0 0 1 7.930615e-02 11.7638)" font-family="'MyriadPro-Regular'" font-size="14px" text-decoration=" underline">Session hash table</text>
+<rect x="73.6" y="80.6" fill="none" width="23.9" height="13.4"/>
+<text transform="matrix(1 0 0 1 73.6182 88.5625)" font-family="'InputMonoCompressed-Regular'" font-size="11px">...</text>
+<rect x="208.2" y="24.3" fill="none" width="30.8" height="12.6"/>
+<text transform="matrix(1 0 0 1 208.1786 27.1622)"><tspan x="0" y="0" font-family="'MyriadPro-Regular'" font-size="4px">start_time</tspan><tspan x="0" y="4.8" font-family="'MyriadPro-Regular'" font-size="4px">latest_txn_time</tspan></text>
+<rect x="190.6" y="80.6" fill="none" width="23.9" height="13.4"/>
+<text transform="matrix(1 0 0 1 190.6238 88.5625)" font-family="'InputMonoCompressed-Regular'" font-size="11px">...</text>
+<rect x="54.5" y="7.4" fill="none" width="58.1" height="10.5"/>
+<text transform="matrix(1 0 0 1 62.5625 15.2073)" font-family="'MyriadPro-Regular'" font-size="11px" text-decoration=" underline">Client IPs</text>
+<rect x="158.2" y="7.4" fill="none" width="78.9" height="10.5"/>
+<text transform="matrix(1 0 0 1 162.6582 15.2073)" font-family="'MyriadPro-Regular'" font-size="11px" text-decoration=" underline">Session objects</text>
 </svg>

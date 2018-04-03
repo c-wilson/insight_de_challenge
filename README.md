@@ -70,7 +70,7 @@ DataSource subclasses can be easily made to handle different datatypes such as H
 should adhere to the following API:
 
 ```python
-from edgar_sessionizer.data_sources import DataSource, RequestRecord
+from edgar_sessionizer.sources import DataSource, RequestRecord
 
 class MyDataSource(DataSource):
     """Source for data for Sessionization from a network socket or a new filetype."""
@@ -81,7 +81,7 @@ class MyDataSource(DataSource):
         return True
     
     def get_next(self):
-        sources.py
+        # parse data and return as a RequestRecord.
         return RequestRecord(...)
 ```
 
@@ -99,10 +99,10 @@ Sinks receive information about sessions parsed by the Sessionizer. They then sa
 the data to another process as required (ie SQL database, network socket, etc.). They should adhere to the following API:
 
 ```python
-from edgar_sessionization.sinks import Sink
+from edgar_sessionizer.sinks import Sink
 
 class MySink(Sink):
-    def write(self, ip_address: str, session_start: float, session_end: float, duration: float, n_requests: int):
+    def write(self, session):
         # save, transmit, etc...
         return
 ```

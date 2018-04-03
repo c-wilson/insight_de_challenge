@@ -10,8 +10,7 @@ from collections import deque, defaultdict
 from itertools import count
 from . import sources
 from . import sinks
-
-
+import logging
 
 class Sessionizer:
     """
@@ -50,24 +49,30 @@ class Sessionizer:
         """
 
         while self.source:
-            # Get next transaction record:
-            record = self.source.get_next()
+            # Get next transaction record, try again if parsing fails:
+            try:
+                record = self.source.get_next()
+            except sources.ParsingError as e:
+                print(str(e))
+                continue
+
             timestamp = record.timestamp
+            expiration_time = timestamp + self._session_timeout_dur + 1
             ip = record.ip
-                # Add transaction to the record for the IP:
-            self._sessions[ip].add_txn(ip, timestamp)
-            # todo: can add more tracking information (ie accession, url)
 
-            # Add the session's IP to the expiration tracker:
-            expiration_time = timestamp + self._session_timeout_dur
-            self._ips_by_expiration[expiration_time].appendleft(ip)  # using as queue (FIFO). Add left, pop right.
-
-            # If time has advanced, service expirations occuring at the new timestamp:
+            # If time has advanced, service expirations occuring at or before the new time:
             if record.timestamp > self._current_time:
                 self._current_time = timestamp
                 self._process_timeouts(timestamp)
-                # Also, add the new expiration time to the queue.
-                self._expiration_times.append(expiration_time)  # add to time queue
+                self._expiration_times.append(expiration_time)
+
+            # Update the session hashmap with the transaction.
+            self._sessions[ip].add_txn(ip, timestamp)
+            # todo: can add more tracking information (ie accession, url)
+
+            # Add the session's IP to the expiration tracker. Expiration time is the timestamp when we will need to
+            # service this session again to check if it has timed out.
+            self._ips_by_expiration[expiration_time].append(ip)  # using as queue (FIFO). Add right, pop left.
 
         # If source returns False there are no more transactions, cleanup open sessions now the specification is to log
         # sessions in the order that they were started, so we cannot reuse logic from normal timeouts.
@@ -75,7 +80,7 @@ class Sessionizer:
 
     def _process_timeouts(self, time: float):
         """
-        Service all session expiration that occur at or prior to the specified time. Retrieves IP addresses from the
+        Service all session expirations that occur at or prior to the specified time. Retrieves IP addresses from the
         expiration times dictionary and uses this to check the session instance in
 
         :param time: process all expirations that occur prior to this time.
@@ -83,21 +88,21 @@ class Sessionizer:
 
         # Process all expiration times that 1) haven't been processed and 2) are less than or equal to the
         # current time, specified by the time parameter.
-
-        while self._expiration_times and self._expiration_times[0] < time:
+        while self._expiration_times and self._expiration_times[0] <= time:
             t = self._expiration_times.popleft()
             ips = self._ips_by_expiration.pop(t)  # type: deque
-            latest_txn_time = time - self._session_timeout_dur
-            # if the session's last transaction occured before latest_txn_time, it is expired.
+            latest_txn_time = t - self._session_timeout_dur - 1
 
+            # if the session's last transaction occured before latest_txn_time, it is expired.
             while ips:
-                ip = ips.pop()
+                ip = ips.popleft()
                 if ip in self._sessions:
                     # must explicitly check because if the session is deleted, defaultdict will create on get
                     session = self._sessions[ip]
                     if session.latest <= latest_txn_time:
                         self.sink.write(session)
                         del self._sessions[ip]  # Effectively ends session by removing from data structure.
+
 
     def _cleanup(self):
         """ Closes and sends to sink any open sessions in the order they were opened. """
@@ -138,3 +143,6 @@ class Session:
     def __lt__(self, other: 'Session'):
         """ for sorting based on session open time. """
         return self._id < other._id
+
+    def __str__(self):
+        return self.ip

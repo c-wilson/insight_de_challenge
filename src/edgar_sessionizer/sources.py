@@ -94,17 +94,26 @@ class CsvSource(DataSource):
         """
 
         line = self._next_line
-        # unpack:
-        ip = line[0]
-        d, t, z = line[1], line[2], line[3]
-        timestamp = self._datetime_to_timestamp(d, t, z)
-        cik, accession, extention = line[4], line [5], line[6]
-        record = RequestRecord(ip, timestamp, cik, accession, extention)
 
-        # Read the next line now, so that we can set _bool to false if no more lines exist.
-        self._next_line = self._read_next_line()
+        # unpack fields and convert time:
+        try:
+            ip = line[0]  # todo: check that this looks like an IP address.
+            d, t, z = line[1], line[2], line[3]  # these will be checked later
+            cik, accession, extention = line[4], line[5], line[6]  # these are arbirary strings.
+            timestamp = self._datetime_to_timestamp(d, t, z)
+            record = RequestRecord(ip, timestamp, cik, accession, extention)
+        except IndexError:  # if our line is missing a field.
+            err_str = 'Bad record at line {}.'.format(self._reader.line_num)
+            raise ParsingError(err_str)
+        except ValueError:  # datetime strptime raises value error.
+            err_str = 'Bad time format at line {}.'.format(self._reader.line_num)
+            raise ParsingError(err_str)
+        finally:
+            # Read the next line now, so that we can set _bool to false if no more lines exist.
+            self._next_line = self._read_next_line()
 
         return record
+
 
     def _read_next_line(self) -> list:
         """
@@ -164,9 +173,8 @@ class RequestRecord:
         self.extention = extention
 
 
-
-
-
+class ParsingError(Exception):
+    pass
 
 
 

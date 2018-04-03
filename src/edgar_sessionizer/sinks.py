@@ -6,11 +6,11 @@ process message passing.
 
 Classes:
     Sink - base class for handling data.
-    CsvSink - logs session information from
+    CsvSink - logs session information to a csv file.
 """
-import os
 import datetime
 from edgar_sessionizer import sessionization
+import csv
 
 
 class Sink:
@@ -30,7 +30,7 @@ class Sink:
         """ overwrite this to use in context manager """
         pass
 
-    def write(self, session: '.sessionization.Session'):
+    def write(self, session: 'sessionization.Session'):
         """
         Skeleton for write method. Implementation depends on how data will be stored.
 
@@ -63,6 +63,8 @@ class CsvSink(Sink):
         assert mode in ('r+', 'w'), "File must be opened in a writable mode."
         self._path = path
         self._file = open(path, mode)
+        # I'm choosing to buffer here for performance, but there is some lag between the writes and changes to the file.
+        self._writer = csv.writer(self._file, lineterminator='\n')  # '\n' matches spec from example output.
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._file.close()
@@ -78,15 +80,8 @@ class CsvSink(Sink):
 
         start_time_str = self._timestamp_to_str(session.start)
         end_time_str = self._timestamp_to_str(session.latest)
-
-        save_str = '{},{},{},{:d},{:d}{}'.format(
-            session.ip, start_time_str,
-            end_time_str,
-            int(session.duration()),
-            int(session.txn_count),
-            os.linesep
-        )
-        self._file.write(save_str)
+        to_write = (session.ip, start_time_str, end_time_str, int(session.duration()), int(session.txn_count))
+        _ = self._writer.writerow(to_write)
 
     def _timestamp_to_str(self, timestamp: float):
         dt = datetime.datetime.fromtimestamp(timestamp)

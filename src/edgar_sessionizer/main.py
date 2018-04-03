@@ -1,3 +1,7 @@
+"""
+Entry-point scripts that make instances of DataSource, Sessionizer and Sink classes.
+"""
+
 from edgar_sessionizer import sessionization, sources, sinks
 import os
 
@@ -26,8 +30,7 @@ def csv_to_txt(log_directory, save_path):
 
 
 if __name__ == '__main__':
-    # input_dir = '/Users/chris/PycharmProjects/insight_de_challenge/insight_testsuite/tests/test_1/input'
-    # save_path = '/Users/chris/PycharmProjects/insight_de_challenge/insight_testsuite/tests/test_1/output/run1.txt'
-    input_dir = '/Users/chris/PycharmProjects/insight_de_challenge/playing'
-    save_path = '/Users/chris/PycharmProjects/insight_de_challenge/playing/result1.txt'
+    input_dir = './input'
+    save_path = './output/sessionization.txt'
+
     csv_to_txt(input_dir, save_path)

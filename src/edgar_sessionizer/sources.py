@@ -60,12 +60,10 @@ class CsvSource(DataSource):
     """
     Data source for parsing EDGAR CSV files.
 
-    This is a generator object.
-
     Public methods:
         get_next() - returns RequestRecord for next transaction in file.
-
     """
+    
     def __init__(self, file_path: str):
         """
         :param file_path: path to the file.

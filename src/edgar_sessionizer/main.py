@@ -8,9 +8,10 @@ import os
 
 def csv_to_txt(log_directory, save_path):
     """
+    Runs Sessionizer with CSV input source and output source as per coding challenge spec.
 
-    :param log_directory:
-    :param save_path:
+    :param log_directory: Directory to the input directory containing "log.csv" and "inactivity_period.txt" files
+    :param save_path: Path to save output.
     :return:
     """
 
@@ -30,6 +31,7 @@ def csv_to_txt(log_directory, save_path):
 
 
 if __name__ == '__main__':
+    # default inputs and outputs based on challenge spec:
     input_dir = './input'
     save_path = './output/sessionization.txt'
 

@@ -11,7 +11,20 @@ This should not require installation, but the following dependancies should be m
 
  Tested on Python 3.6.
  
+## Use
 
+The program can be run using using `./run.sh` if data is placed in the correct directory structure.
+
+Data should be placed in the `input` directory. Two files are expected:
+1. `inactivity_period.txt` which is a text file specifying how long a session is kept open with no requests before being
+logged as closed.
+2. `log.csv` is a CSV file that adheres to the SEC's EDGAR log format. A header is expected, so the first line of the
+file is not processed as data.
+
+## Error handling
+
+Data in the CSV is processed by lines. If a line is not parsable, the data is discarded and the next line is read and 
+processed.
 
 # Sessionizer algorithm and data structure
 The core algorithm is stored in [src/edgar_sessionizer/sessionization.py](./src/edgar_sessionizer/sessionization.py)

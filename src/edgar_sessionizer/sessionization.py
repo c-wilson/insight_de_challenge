@@ -54,6 +54,7 @@ class Sessionizer:
                 record = self.source.get_next()
             except sources.ParsingError as e:
                 print(str(e))
+                logging.error(str(e))
                 continue
 
             timestamp = record.timestamp

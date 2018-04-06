@@ -4,6 +4,7 @@ Entry-point scripts that make instances of DataSource, Sessionizer and Sink clas
 
 from edgar_sessionizer import sessionization, sources, sinks
 import os
+import logging
 
 
 def csv_to_txt(log_directory, save_path):
@@ -33,6 +34,13 @@ def csv_to_txt(log_directory, save_path):
 if __name__ == '__main__':
     # default inputs and outputs based on challenge spec:
     input_dir = './input'
-    save_path = './output/sessionization.txt'
+    save_dir = './output'
+    save_path = os.path.join(save_dir, 'sessionization.txt')
+    log_path = os.path.join(save_dir, 'error_log.txt')
+
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)-20s %(levelname)-8s: %(message)s',
+                        datefmt='%Y-%m-%dT%H:%M:%S',
+                        filename=log_path)
 
     csv_to_txt(input_dir, save_path)

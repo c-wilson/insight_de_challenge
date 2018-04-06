@@ -7,9 +7,9 @@ files, but it is designed to extend easily to other data sources (i.e. network s
 
 This should not require installation, but the following dependancies should be met: 
 
-* Python >= 3.5
+* Python >= 3.5 (including standard lib packages *collections, logging, itertools, csv*)
 
- Tested on Python 3.6.
+Tested on Python 3.6 running on Ubuntu Linux and MacOS.
  
 ## Use
 
@@ -21,17 +21,24 @@ logged as closed.
 2. `log.csv` is a CSV file that adheres to the SEC's EDGAR log format. A header is expected, so the first line of the
 file is not processed as data.
 
-## Error handling
+## Tests
 
-Data in the CSV is processed by lines. If a line is not parsable, the data is discarded and the next line is read and 
-processed.
+Test cases are provided to check for good behavior. Specifically the following behaviors were verified:
+1. Data exception handling (bad time formatting and missing fields from a line)
+1. Different timeout accuracy
+1. Date change
+1. No data
+1. Multiple transactions from same client at same time point.
+1. Teardown at end of file (EOF) 
+
+Run all tests using insight_testsuite/run_tests.sh (script provided by Insight)
 
 # Sessionizer algorithm and data structure
 The core algorithm is stored in [src/edgar_sessionizer/sessionization.py](./src/edgar_sessionizer/sessionization.py)
 
-This algorithm works with average computational complexity of *O(nm)*, where _n_ is the number of unique sessions, and 
-_m_ is the number of transactions per session. Worst case computational complexity is _O(n^m)_, if the data is 
-adversarial to the Python hashing function.
+This algorithm works with average computational complexity of *O(n)*, where _n_ is the number of transactions. 
+Worst case computational complexity is _O(k*n)_, where _k_ is number of sessions and if the data is adversarial to the 
+Python hashing function.
 
 ### Requirements:
 * We need a way to quickly keep track of which sessions expire in a given second without looping through all open sessions.
@@ -71,6 +78,18 @@ verified based on the latest transaction time recorded in the structure. If the 
 move on to the next IP.
 4. If a session has expired, send the session information to the Sink object, and delete the session from the hash table.
 
+### Error handling
+
+Data in the CSV is processed by lines. If a line is not parsable, we lose a transaction. Losing a transaction is really 
+not the end of the world in most cases:
+* If we lose a lines that are for open sessions, the some of the sessions might expire sooner than they should.
+* If we lose lines that open sessions, we will either 1) lose sessions entirely, or 2) underestimate the session length 
+because we will open the session in the next transaction.
+
+Since this probably doesn't affect our data too much,we should just ignore any un-parsable data and move on to the next
+transaction. *However, if we have some systematic error* in our datasource, we probably would like to know that we're 
+losing data. To allow this debugging, a log file is generated `error_log.txt` that specifies the datetime of the error,
+and the line of the input file where the error was encountered.
 
 # Program design
 ![Graph](./docs/graph.svg)
@@ -150,9 +169,3 @@ to a separate process. Again this can occur via a network socket protocol. The l
 incoming transactions and would write them to an open file.
 
 Robust implementations that are much better than this are available off the shelf using a SQL/NoSQL database servers.
-
-## Exception handling
-Losing a transaction is really not the end of the world.
-* If we lose a lines that are for open sessions, the some of the sessions might expire sooner than they should.
-* If we lose lines that open sessions, we will either 1) lose sessions entirely, or 2) underestimate the session length because we will open the session in the next transaction.
-

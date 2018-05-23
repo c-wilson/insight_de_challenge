@@ -9,6 +9,7 @@ Classes:
 
 import csv
 import datetime
+
 from csv import DictReader
 
 ISO_DATE_FMT = '%Y-%m-%dT%H:%M:%S'
@@ -137,7 +138,9 @@ class CsvSource(DataSource):
         if float(zone) != 0.:
             raise NotImplementedError('Time zone support is not implemented.')
 
-        dt = datetime.datetime.strptime(date_str + 'T' + time_str, ISO_DATE_FMT)
+        y, month, d = [int(x) for x in date_str.split('-')]
+        h, minute, s = [int(x) for x in time_str.split(':')]
+        dt = datetime.datetime(y, month, d, h, minute, s)
         return dt.timestamp()
 
     def __exit__(self, exc_type, exc_val, exc_tb):

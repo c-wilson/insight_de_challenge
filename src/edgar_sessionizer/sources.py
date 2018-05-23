@@ -1,19 +1,29 @@
 """
-Classes for input to the Sessionization class.
+Classes for input to the Sessionization class. These are plugins that allow for different data sources to be
+used as inputs to the Sessionization class. These are similar to base IO classes in that they return data
+when queried.
 
 Classes:
     DataSource - Base class.
     CsvSource - Read and parses CSV file input from EDGAR site.
-    RequestRecord - Data class passed to Sessionization.
+
+DataSource subtypes should adhere to the following convention:
+
+* contain facilities for context management (__enter__ and __exit__ functions)
+* each should have a__bool__ functions that return True when data is available and False when the data source
+is exhausted.
+* new data can be pulled using a public get_next() function that returns a
+dictionary containing the following fields:
+    1. "ip" - IP address of the client
+    4. "timestamp" - float representing UNIX epoch time
+
+    Other fields are not currently used.
 """
 
 import csv
 import datetime
 
 from csv import DictReader
-
-ISO_DATE_FMT = '%Y-%m-%dT%H:%M:%S'
-
 
 class DataSource:
     """

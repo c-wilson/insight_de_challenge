@@ -14,7 +14,10 @@ Contains the main algorithm for tracking classes.
 ## sources.py
 Contains data input source classes (DataSources).
 
-DataSources have a public `get_next()` method that returns a `RecordRequest` data object.
+DataSources have a public `get_next()` method that returns a dictionary containing at minimum:
+    
+    1. "ip": string representing the client's ip for the request,
+    1. "timestamp": float representing time in seconds since UNIX epoch.
 
 ## sinks.py
 Contains output classes for saving or transmission of session data to another

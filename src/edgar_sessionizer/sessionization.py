@@ -18,8 +18,8 @@ class Sessionizer:
     Main logic class that requests new data from DataSource objects, tracks open user sessions, and reports
     closed session information to a Sink class for logging or transmission to another process.
 
-    Gets data by calling DataSource.get_next(), which should return a RequestRecord data object (found in
-    sources module)
+    Gets data by calling DataSource.get_next(), which should return a dictionary representing each request.
+
     Writes closed session data by calling Sink.write(), which should accept a Session data object (found in
     this module)
 

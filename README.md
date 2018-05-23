@@ -113,10 +113,12 @@ class MyDataSource(DataSource):
         return True
     
     def get_next(self):
-        # parse data and return as a RequestRecord.
-        return RequestRecord(...)
+        # parse data and return as a dict.
+        return {
+            'ip': '10.10.10.10',
+            'timestamp': 12234234. # float representing UNIX epoch time in seconds 
+        }
 ```
-
 
 ### Streaming data sources
 Streaming data would not arrive as a CSV, but rather as HTTP POSTs or the like. This was written with OOD, so handling 

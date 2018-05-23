@@ -7,12 +7,9 @@ Classes:
     RequestRecord - Data class passed to Sessionization.
 """
 
-import os
-from collections import deque
 import csv
 import datetime
-from typing import Tuple
-
+from csv import DictReader
 
 ISO_DATE_FMT = '%Y-%m-%dT%H:%M:%S'
 
@@ -47,13 +44,13 @@ class DataSource:
         """
         return False
 
-    def get_next(self) -> "RequestRecord":
+    def get_next(self) -> 'dict':
         """
         Template for function to return the next data record.
 
         Implementations should return a tuple of (IP address(str), timestamp(float))
         """
-        return RequestRecord('', -1, '', '', '')
+        pass
 
 
 class CsvSource(DataSource):
@@ -63,7 +60,9 @@ class CsvSource(DataSource):
     Public methods:
         get_next() - returns RequestRecord for next transaction in file.
     """
-    
+    _reader: DictReader
+    _required_fields = ('ip', 'date', 'time', 'zone', 'cik', 'accession', 'extention')
+
     def __init__(self, file_path: str):
         """
         :param file_path: path to the file.
@@ -71,47 +70,44 @@ class CsvSource(DataSource):
         super(CsvSource, self).__init__()
         self.file_path = file_path
         self._file = open(file_path, 'r')
-        self._reader = csv.reader(self._file)
-        self._header = next(self._reader)  # not used, but we must iterate through it...
-        self._bool = True  # True if more data is available. Set to false by _read_next_line if EOF.
+        self._reader = csv.DictReader(self._file)
+        self._check_header()
+        self._data_available = True  # True if more data is available. Set to false by _read_next_line if EOF.
         self._next_line = self._read_next_line()
 
     def __bool__(self):
         """ returns True until the end of the file has been reached. """
-        return self._bool
+        return self._data_available
 
-    def get_next(self, *args, **kwargs) -> "RequestRecord":
+    def get_next(self, *args, **kwargs) -> dict:
         """
-        Parses data from CSV Reader line and creates a RequestRecord object.
+        Parses data from CSV Reader line object and returns a dictionary including the UNIX timestamp of
+        the request.
 
         This decodes CSVs with the following format:
           IP_address(str),Date(YYYY-MM-DD),Time(HH:MM:SS),TZ(float),cik(str),accession(str),extention(str)
           Other fields are not used. Strings can be of arbitrary length, including IP address.
 
-        :returns RequestRecord object
+        :returns dictionary of request information
         """
 
-        line = self._next_line
+        line = self._next_line  # type: dict
 
-        # unpack fields and convert time:
+        # Unpack fields for date time parsing:
+        d, t, z = line['date'], line['time'], line['zone']
+
+        # Parse time and make record. Fail gracefully if the time cannot be parsed by raising an exception
+        # that will be caught by the parent parsing class and logged:
         try:
-            ip = line[0]  # todo: check that this looks like an IP address.
-            d, t, z = line[1], line[2], line[3]  # these will be checked later
-            cik, accession, extention = line[4], line[5], line[6]  # these are arbirary strings.
             timestamp = self._datetime_to_timestamp(d, t, z)
-            record = RequestRecord(ip, timestamp, cik, accession, extention)
-        except IndexError:  # if our line is missing a field.
-            err_str = 'Bad record at line {}.'.format(self._reader.line_num)
-            raise ParsingError(err_str)
+            line['timestamp'] = timestamp
+            return line
         except ValueError:  # datetime strptime raises value error.
             err_str = 'Bad time format at line {}.'.format(self._reader.line_num)
             raise ParsingError(err_str)
         finally:
             # Read the next line now, so that we can set _bool to false if no more lines exist.
             self._next_line = self._read_next_line()
-
-        return record
-
 
     def _read_next_line(self) -> list:
         """
@@ -123,10 +119,9 @@ class CsvSource(DataSource):
         try:
             next_line = next(self._reader)
         except StopIteration:
-            self._bool = False
+            self._data_available = False
             next_line = None
         return next_line
-
 
     def _datetime_to_timestamp(self, date_str: str, time_str: str, zone: str) -> float:
         """
@@ -149,31 +144,19 @@ class CsvSource(DataSource):
         """ context manager; closes file """
         self._file.close()
 
+    def _check_header(self):
+        """
+        Checks that all required fields are contained in the CSV header and raises ValueError if not.
 
-class RequestRecord:
-    """
-    Structure for containing information from a HTTP request for EDGAR requests.
-
-    Attributes:
-        ip: string representing client IP address.
-        timestamp: float representing time in seconds (UNIX timestamp spec)
-        cik: string
-        accession: string
-        extention: string
-    """
-    __slots__ = ['ip', 'timestamp', 'cik', 'accession', 'extention']  # slots for memory efficiency.
-
-    def __init__(self, ip, timestamp, cik, accession, extention):
-        self.ip = ip
-        self.timestamp = timestamp
-        self.cik = cik
-        self.accession = accession
-        self.extention = extention
+        If the header does not contain relevant fields, it also sets the source_active flag to False indicating
+        that the source has no additional data to pull.
+        """
+        fields = self._reader.fieldnames
+        for name in self._required_fields:
+            if name not in fields:
+                self._data_available = False
+                raise ValueError('Malformed CSV input. Missing {} field in header'.format(name))
 
 
 class ParsingError(Exception):
     pass
-
-
-
-

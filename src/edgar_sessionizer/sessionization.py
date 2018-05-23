@@ -12,13 +12,16 @@ from . import sources
 from . import sinks
 import logging
 
+
 class Sessionizer:
     """
-    Main logic class that requests new data from DataSource objects, tracks open user sessions, and reports closed
-    session information to a Sink class for logging or transmission to another process.
+    Main logic class that requests new data from DataSource objects, tracks open user sessions, and reports
+    closed session information to a Sink class for logging or transmission to another process.
 
-    Gets data by calling DataSource.get_next(), which should return a RequestRecord data object (found in sources module)
-    Writes closed session data by calling Sink.write(), which should accept a Session data object (found in this module)
+    Gets data by calling DataSource.get_next(), which should return a RequestRecord data object (found in
+    sources module)
+    Writes closed session data by calling Sink.write(), which should accept a Session data object (found in
+    this module)
 
     Session information is sent to Sink immediately on expiration of the session.
 
@@ -57,12 +60,12 @@ class Sessionizer:
                 logging.error(str(e))
                 continue
 
-            timestamp = record.timestamp
+            timestamp = record['timestamp']
             expiration_time = timestamp + self._session_timeout_dur + 1
-            ip = record.ip
+            ip = record['ip']
 
             # If time has advanced, service expirations occuring at or before the new time:
-            if record.timestamp > self._current_time:
+            if timestamp > self._current_time:
                 self._current_time = timestamp
                 self._process_timeouts(timestamp)
                 self._expiration_times.append(expiration_time)
@@ -103,7 +106,6 @@ class Sessionizer:
                     if session.latest <= latest_txn_time:
                         self.sink.write(session)
                         del self._sessions[ip]  # Effectively ends session by removing from data structure.
-
 
     def _cleanup(self):
         """ Closes and sends to sink any open sessions in the order they were opened. """
